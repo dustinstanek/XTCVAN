@@ -1,0 +1,69 @@
+I apologize for the confusion. Unfortunately, it appears that Wasabi doesn't currently support changing the CORS settings directly through their console.
+
+However, you can still set up CORS for your Wasabi bucket by using an S3-compatible tool like the AWS CLI or S3cmd. Here's a step-by-step guide to setting up CORS using AWS CLI:
+
+1. Install and configure the AWS CLI:
+Install the AWS CLI on your local machine by following the instructions in the AWS CLI User Guide: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+
+After installing the AWS CLI, you will need to configure the AWS CLI with your Wasabi access keys:
+
+```
+aws configure
+```
+
+Enter your Wasabi access key and secret key when prompted, and set the default region to your Wasabi bucket's region. (e.g., `us-east-1` for Wasabi's US East region)
+
+access-key=
+TJWZ85H2KW3BPC76SWB3
+
+secret-key=
+Rfg42E2AbKu2ZNwJwdIBiMoNGr6a5HtFguOWMssM
+
+
+2. Create a CORS configuration file:
+Create a new file called `cors.json` on your local machine, and add the following CORS configuration, replacing `your-domain.com` with your website's domain:
+
+```json
+[
+  {
+    "AllowedHeaders": ["*"],
+    "AllowedMethods": ["GET"],
+    "AllowedOrigins": ["https://your-domain.com"]
+  }
+]
+```
+
+If you want to allow access from any domain during development, you can use `*` as the allowed origin:
+
+```json
+"AllowedOrigins": ["*"]
+```
+
+3. Apply the CORS configuration to your Wasabi bucket:
+Use the AWS CLI to apply the CORS configuration from the `cors.json` file to your Wasabi bucket:
+
+```
+aws s3api put-bucket-cors --endpoint-url https://s3.YOUR_REGION.wasabisys.com --bucket YOUR_BUCKET_NAME --cors-configuration file://path/to/cors.json
+```
+
+aws s3api put-bucket-cors --endpoint-url https://s3.us-west-1.wasabisys.com --bucket scripts-and-codes --cors-configuration "file:///Users/dusty/Documents/+OpenAI/+2023/_xtc-van-master/cors.json"
+
+aws s3api put-bucket-cors --endpoint-url https://s3.us-west-1.wasabisys.com --bucket script-and-codes --cors-configuration file://path/to/cors.json
+
+aws s3api put-bucket-cors --endpoint-url "https://s3.us-west-1.wasabisys.com" --bucket "scripts-and-codes" --cors-configuration "[{'AllowedHeaders': ['*'], 'AllowedMethods': ['GET'], 'AllowedOrigins': ['https://dustinstanek.com']}]"
+
+aws s3api put-bucket-cors --endpoint-url "https://s3.us-west-1.wasabisys.com" --bucket "scripts-and-codes" --cors-configuration "file:///Users/dusty/Documents/+OpenAI/+2023/_xtc-van-master/cors.json"
+
+Replace `YOUR_REGION`, `YOUR_BUCKET_NAME`, and the file path with the correct values.
+
+4. Verify the CORS configuration:
+You can use the AWS CLI to verify that the CORS configuration was applied correctly to your Wasabi bucket:
+
+```
+aws s3api get-bucket-cors --endpoint-url https://s3.YOUR_REGION.wasabisys.com --bucket YOUR_BUCKET_NAME
+```
+aws s3api get-bucket-cors --endpoint-url https://s3.us-west-1.wasabisys.com --bucket scripts-and-codes
+
+This should return the CORS configuration you set in the previous step.
+
+Now your Wasabi bucket should have the correct CORS settings, allowing your website to access the game files hosted on Wasabi.
